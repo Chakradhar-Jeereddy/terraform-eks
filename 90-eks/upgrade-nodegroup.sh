@@ -99,7 +99,7 @@ fi
 echo -e "${Y}Planned versions: blue=$NG_BLUE_VERSION green=$NG_GREEN_VERSION cp=$CP_VERSION${N}" | tee -a "$LOG_FILE"
 
 # ---- STEP2-A: Create target nodegroup (enable both)
-CONFIRM "STEP2-A: Create target nodegroup. Terraform PLAN now?"
+
 
 terraform plan \
   -var="eks_version=$CP_VERSION" \
@@ -108,7 +108,7 @@ terraform plan \
   -var="eks_nodegroup_blue_version=$NG_BLUE_VERSION" \
   -var="eks_nodegroup_green_version=$NG_GREEN_VERSION" | tee -a "$LOG_FILE"
 VALIDATE ${PIPESTATUS[0]} "Terraform plan (create target)"
-
+CONFIRM "STEP2-A: Create target nodegroup. Terraform PLAN now?"
 terraform apply -auto-approve \
   -var="eks_version=$CP_VERSION" \
   -var="enable_blue=$ENABLE_BLUE" \
@@ -160,7 +160,7 @@ else
 fi
 echo -e "${Y}Final vars: enable_blue=$ENABLE_BLUE enable_green=$ENABLE_GREEN${N}" | tee -a "$LOG_FILE"
 
-CONFIRM "STEP2-B: Delete current nodegroup ($CURRENT_NG_VERSION). Terraform PLAN now?"
+
 
 terraform plan \
   -var="eks_version=$CP_VERSION" \
@@ -169,7 +169,7 @@ terraform plan \
   -var="eks_nodegroup_blue_version=$NG_BLUE_VERSION" \
   -var="eks_nodegroup_green_version=$NG_GREEN_VERSION" | tee -a "$LOG_FILE"
 VALIDATE ${PIPESTATUS[0]} "Terraform plan (delete current)"
-
+CONFIRM "STEP2-B: Delete current nodegroup ($CURRENT_NG_VERSION). Terraform PLAN now?"
 terraform apply -auto-approve \
   -var="eks_version=$CP_VERSION" \
   -var="enable_blue=$ENABLE_BLUE" \
