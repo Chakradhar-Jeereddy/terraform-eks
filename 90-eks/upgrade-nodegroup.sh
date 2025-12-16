@@ -64,3 +64,38 @@ CP_VERSION=$(aws eks describe-cluster \
 VALIDATE $? "Fetch current control plane version"
 
 echo -e "${Y}Control plane version: $CP_VERSION${N}" | tee -a "$LOG_FILE"
+
+KUBELET_VER=$(kubectl get nodes -l "nodegroup=${CURRENT_NG_VERSION}" \
+  -o jsonpath='{.items[0].status.nodeInfo.kubeletVersion}' 2>/dev/null)
+
+if [[ -z "$KUBELET_VER" ]]; then
+  echo -e "${R}No nodes found with label nodegroup=${CURRENT_NG_VERSION}. Check node labels.${N}" | tee -a "$LOG_FILE"
+  exit 1
+fi
+
+# Extract "1.32" from "v1.32.4-eks-..."
+CURRENT_NG_K8S_VER=$(echo "$KUBELET_VER" | sed -E 's/^v([0-9]+\.[0-9]+).*/\1/')
+if [[ -z "$CURRENT_NG_K8S_VER" ]]; then
+  echo -e "${R}Failed to parse kubeletVersion: $KUBELET_VER${N}" | tee -a "$LOG_FILE"
+  exit 1
+fi
+
+echo -e "${Y}${CURRENT_NG_VERSION} kubeletVersion: $KUBELET_VER -> detected $CURRENT_NG_K8S_VER${N}" | tee -a "$LOG_FILE"
+echo -e "${Y}${TARGET_NG_VERSION} will be created at CP version: $CP_VERSION${N}" | tee -a "$LOG_FILE"
+
+# --- Prepare terraform vars for "create target while keeping current"
+# enable both (blue & green) for first apply
+ENABLE_BLUE=true
+ENABLE_GREEN=true
+
+# map versions into vars expected by terraform
+# target gets CP version; current keeps detected
+if [[ "$CURRENT_NG_VERSION" == "green" ]]; then
+  NG_GREEN_VERSION="$CURRENT_NG_K8S_VER"
+  NG_BLUE_VERSION="$CP_VERSION"
+else
+  NG_BLUE_VERSION="$CURRENT_NG_K8S_VER"
+  NG_GREEN_VERSION="$CP_VERSION"
+fi
+
+echo -e "${Y}Planned versions: blue=$NG_BLUE_VERSION green=$NG_GREEN_VERSION cp=$CP_VERSION${N}" | tee -a "$LOG_FILE"
