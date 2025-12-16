@@ -216,10 +216,13 @@ latest_compatible_addon_version() {
   local addon="$1"
   local cp_ver="$2"
 
-  aws eks describe-addon-versions --addon-name "$addon" --region "$AWS_REGION" \
-    --query "addons[0].addonVersions[?compatibilities[?clusterVersion=='${cp_ver}']]|[0].addonVersion" \
+  aws eks describe-addon-versions \
+    --addon-name "$addon" \
+    --region "$AWS_REGION" \
+    --query "addons[0].addonVersions[?compatibilities[?clusterVersion=='${cp_ver}']]|[-1].addonVersion" \
     --output text 2>/dev/null || echo "None"
 }
+
 
 upgrade_addons_to_latest_compatible
 
