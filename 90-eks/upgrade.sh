@@ -219,6 +219,8 @@ latest_compatible_addon_version() {
     --output text 2>/dev/null || echo "None"
 }
 
+upgrade_addons_to_latest_compatible
+
 # terraform plan -var="eks_version=$3" -var="eks_nodegroup_version=$4" -out=tfplan | tee -a "$LOG_FILE"
 # terraform show tfplan | tee -a "$LOG_FILE"
 
