@@ -80,13 +80,13 @@ fi
 echo -e "${G}Version check passed:${N} $CURRENT_CP_VERSION -> $EKS_TARGET_VERSION" | tee -a "$LOG_FILE"
 
 echo -e "$Y Upgrading Control plane version $N"
-# aws eks update-cluster-version \
-#   --name "$CLUSTER_NAME" \
-#   --region "$AWS_REGION" \
-#   --kubernetes-version "$EKS_TARGET_VERSION" &>> "$LOG_FILE"
+aws eks update-cluster-version \
+  --name "$CLUSTER_NAME" \
+  --region "$AWS_REGION" \
+  --kubernetes-version "$EKS_TARGET_VERSION" &>> "$LOG_FILE"
 VALIDATE $? "Trigger control plane upgrade"
 
-#wait_cluster_upgraded "$EKS_TARGET_VERSION"
+wait_cluster_upgraded "$EKS_TARGET_VERSION"
 
 wait_cluster_upgraded() {
   local expected="$1"
@@ -190,7 +190,7 @@ upgrade_addons_to_latest_compatible(){
     local current latest
     current=$(addon_version "$addon")
     latest=$(latest_compatible_addon_version "$addon" "$cp_ver")
-    echo "DEBUG: addon=$addon cp_ver=$cp_ver latest='$latest'" | tee -a "$LOG_FILE"
+    #echo "DEBUG: addon=$addon cp_ver=$cp_ver latest='$latest'" | tee -a "$LOG_FILE"
 
     if [[ -z "$latest" || "$latest" == "None" ]]; then
       echo -e "${R}Could not find compatible latest version for addon $addon on cluster $cp_ver${N}"
@@ -204,15 +204,15 @@ upgrade_addons_to_latest_compatible(){
       continue
     fi
 
-    # aws eks update-addon \
-    #   --cluster-name "$CLUSTER_NAME" \
-    #   --addon-name "$addon" \
-    #   --addon-version "$latest" \
-    #   --resolve-conflicts PRESERVE \
-    #   --region "$AWS_REGION" &>> "$LOG_FILE"
-    # VALIDATE $? "Update addon $addon -> $latest"
+    aws eks update-addon \
+      --cluster-name "$CLUSTER_NAME" \
+      --addon-name "$addon" \
+      --addon-version "$latest" \
+      --resolve-conflicts PRESERVE \
+      --region "$AWS_REGION" &>> "$LOG_FILE"
+    VALIDATE $? "Update addon $addon -> $latest"
 
-    # wait_addon_active_and_version "$addon" "$latest"
+    wait_addon_active_and_version "$addon" "$latest"
   done
 }
 
