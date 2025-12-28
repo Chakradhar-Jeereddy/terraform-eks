@@ -38,7 +38,7 @@ pipeline {
         stage('Plan') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-ecr) {
+                    withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
                             cd 00-vpc
                             terraform plan
