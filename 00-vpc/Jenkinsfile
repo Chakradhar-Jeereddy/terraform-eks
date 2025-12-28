@@ -2,7 +2,7 @@ pipeline {
     // These are pre-build sections
     agent {
         node {
-            label 'AGENT-1'
+            label 'agent'
         }
     }
     environment {
@@ -26,7 +26,7 @@ pipeline {
         stage('Init') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
                             cd 00-vpc
                             terraform init
@@ -38,7 +38,7 @@ pipeline {
         stage('Plan') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-ecr) {
                         sh """
                             cd 00-vpc
                             terraform plan
@@ -53,13 +53,13 @@ pipeline {
                 ok "Yes, we should."
                 submitter "alice,bob"
                 parameters {
-                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+                    string(name: 'PERSON', defaultValue: 'Mr Chakradhar', description: 'Who should I say hello to?')
                 }
             }
             
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'aws-creds') {
+                    withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
                             cd 00-vpc
                             terraform apply -auto-approve
