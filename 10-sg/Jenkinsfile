@@ -52,7 +52,7 @@ pipeline {
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
                             cd 10-sg
-                            terraform apply -auto-approve
+                            terraform destory -auto-approve
                         """
                     }
                 }
