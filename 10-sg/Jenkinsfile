@@ -59,10 +59,10 @@ pipeline {
         }
         stage('Trigger downstreem') {
           parallel{
-            stage('10-bastion'){
+            stage('20-bastion'){
               steps {
                 script {
-                build job: '10-bastion',
+                build job: '20-bastion',
                 propagate: false
                 wait: false
                 }
