@@ -20,7 +20,7 @@ pipeline {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
-                            cd 00-vpc
+                            cd 20-bastion
                             terraform init
                         """
                     }
@@ -32,7 +32,7 @@ pipeline {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
-                            cd 00-vpc
+                            cd 20-bastion
                             terraform plan
                         """
                     }
@@ -52,22 +52,13 @@ pipeline {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
-                            cd 00-vpc
+                            cd 20-bastion
                             terraform apply -auto-approve
                         """
                     }
                 }
             }
         }
-        stage('Trigger 10-sg') {
-          steps {
-            script {
-              build job: '10-sg',
-              propagate: false
-              wait: false
-            }
-          }
-        }  
     }
     post{
         always{

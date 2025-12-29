@@ -46,7 +46,6 @@ pipeline {
                     string(name: 'PERSON', defaultValue: 'Mr Chakradhar', description: 'Who should I say hello to?')
                 }
             }
-            
             steps {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
@@ -57,6 +56,55 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('Trigger downstreem') {
+          parallel{
+            stage('10-bastion'){
+              steps {
+                script {
+                build job: '10-bastion',
+                propagate: false
+                wait: false
+                }
+              }
+            }
+            stage('30-sg-rules'){
+              steps {
+                script {
+                build job: '30-sg-rules',
+                propagate: false
+                wait: false
+                }
+              }
+            }
+            stage('70-acm'){
+              steps {
+                script {
+                build job: '70-acm',
+                propagate: false
+                wait: true
+                }
+              }
+            }
+            stage('80-frontend-alb'){
+              steps {
+                script {
+                build job: '80-frontend-alb',
+                propagate: false
+                wait: false
+                }
+              }
+            }
+            stage('90-eks'){
+              steps {
+                script {
+                build job: '90-eks',
+                propagate: false
+                wait: false
+                }
+              }
+            }
+          }           
         }
     }
     post{
