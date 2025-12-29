@@ -61,7 +61,7 @@ pipeline {
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
                         sh """
                             cd 00-vpc
-                            terraform destroy -auto-approve
+                            terraform apply -auto-approve
                         """
                     }
                 }
@@ -80,7 +80,6 @@ pipeline {
     post{
         always{
             echo 'I will always say Hello again!'
-            cleanWs()
         }
         success {
             echo 'I will run if success'
