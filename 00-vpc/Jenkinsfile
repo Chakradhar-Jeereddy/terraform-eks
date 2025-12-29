@@ -56,7 +56,6 @@ pipeline {
                     string(name: 'PERSON', defaultValue: 'Mr Chakradhar', description: 'Who should I say hello to?')
                 }
             }
-            
             steps {
                 script{
                     withAWS(region:'us-east-1',credentials:'aws-ecr') {
@@ -68,6 +67,15 @@ pipeline {
                 }
             }
         }
+        stage('Trigger 10-sg') {
+          steps {
+            script {
+              build job: '10-sg',
+              propagate: false
+              wait: false
+            }
+          }
+        }  
     }
     post{
         always{
