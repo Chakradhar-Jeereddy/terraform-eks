@@ -28,7 +28,7 @@ pipeline {
         stage('Plan') {
             steps {
                 script{
-                    withAWS(region:'us-east-1',credentials:'auth') {
+                    withAWS(region:'us-east-1',credentials:'aws-auth') {
                         sh """
                             cd 10-sg
                             terraform plan
