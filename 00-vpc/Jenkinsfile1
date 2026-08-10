@@ -1,0 +1,21 @@
+pipeline{
+    agent{
+        node{
+            label "agent1"
+        }
+    }
+    options{
+        disableConcurrentBuilds()
+        timeout(time: 10, unit: 'MINUTES')
+    }
+    environment{
+        course = 'devops'
+    }
+    stages{
+        stage('Initialize'){
+            steps{
+                pwd
+            }
+        }
+    }
+}
