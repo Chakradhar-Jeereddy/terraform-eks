@@ -96,6 +96,15 @@ pipeline {
                         }
                     }
                 }
+                stage('40-ecr'){
+                    steps{
+                        script{
+                            build job: '40-ecr',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
             }
         }
     }
