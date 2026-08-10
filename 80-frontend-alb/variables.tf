@@ -7,9 +7,9 @@ variable "environment" {
 }
 
 variable "zone_id" {
-    default = "Z01570372XTUEJNI70A9H"
+    default = "Z02261422B2DDXKRO1N94"
 }
 
 variable "domain_name" {
-    default = "chakra86.shop"
+    default = "chakra86.store"
 }
