@@ -15,7 +15,8 @@ pipeline{
         stage('Initialize'){
             steps{
                 sh """
-                  pwd
+                  cd 00-vpc
+                  terraform init
                 """
             }
         }
