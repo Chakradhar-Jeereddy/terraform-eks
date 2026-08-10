@@ -50,8 +50,8 @@ pipeline{
                     build job: '10-sg',
                     wait: false,  
                     propagate: false  // Fail this pipeline if downstream fails
-                )
-            }
-        }    
+                }
+            } 
+        }   
     }
 }
