@@ -49,6 +49,55 @@ pipeline {
                 }
             }
         }
+        stage('Trigger downstream'){
+            parallel{
+                stage('20-bastion'){
+                    steps{
+                        script{
+                            build job: '20-bastion',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
+                stage('30-sg-rules'){
+                    steps{
+                        script{
+                            build job: '30-sg-rules',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
+                stage('70-acm'){
+                    steps{
+                        script{
+                            build job: '70-acm',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
+                stage('80-frontend-alb'){
+                    steps{
+                        script{
+                            build job: '80-frontend-alb',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
+                stage('90-eks'){
+                    steps{
+                        script{
+                            build job: '90-eks',
+                            propogate: false
+                            wait: false
+                        }
+                    }
+                }
+            }
+        }
     }
     post{
         always{

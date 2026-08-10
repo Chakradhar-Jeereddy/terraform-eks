@@ -52,6 +52,6 @@ pipeline{
                     propagate: false  // Fail this pipeline if downstream fails
                 }
             } 
-        }   
+        }
     }
 }
