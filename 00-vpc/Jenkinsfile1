@@ -7,6 +7,8 @@ pipeline{
     options{
         disableConcurrentBuilds()
         timeout(time: 10, unit: 'MINUTES')
+        ansiColor('xterm')
+
     }
     environment{
         course = 'devops'
@@ -40,6 +42,15 @@ pipeline{
                       terraform apply --auto-approve
                     """
                 }
+            }
+        }
+        stage('trigger 10-sg') {
+            steps {
+                script{
+                    build job: '10-sg',
+                    wait: false,  
+                    propagate: false  // Fail this pipeline if downstream fails
+                )
             }
         }    
     }
