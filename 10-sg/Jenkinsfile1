@@ -73,8 +73,8 @@ pipeline {
                     steps{
                         script{
                             build job: '70-acm',
-                            propogate: false
-                            wait: false
+                            propogate: false // propogate status
+                            wait: false  // wait for completion
                         }
                     }
                 }
